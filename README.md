@@ -1,9 +1,4 @@
-# SHAVIRA AI - Virtual Campus Assistant 🤖
-
-**SHAVIRA** (*Simple & Helpful Virtual Assistant*) adalah aplikasi **Retrieval-Augmented Generation (RAG)** berbasis AI yang dirancang untuk membantu mahasiswa dan civitas akademika dalam mencari informasi dari dokumen internal kampus (seperti PDF peraturan, panduan akademik, prosedur, dll) secara presisi menggunakan model bahasa OpenAI.
-
----
-
+# Virtual Campus Assistant
 ## 🌟 Fitur Utama
 
 - **RAG Berpresisi Tinggi**: Menjawab pertanyaan pengguna strictly berbasis konteks dokumen internal untuk mencegah halusinasi.
