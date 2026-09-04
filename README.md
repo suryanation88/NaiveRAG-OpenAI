@@ -1,90 +1,141 @@
 # SHAVIRA AI - Virtual Campus Assistant 🤖
 
-SHAVIRA (Simple & Helpful Virtual Assistant) adalah aplikasi **Retrieval-Augmented Generation (RAG)** yang dirancang untuk membantu mahasiswa dan civitas akademik dalam mencari informasi dari dokumen internal kampus (seperti PDF peraturan, panduan akademik, dll) secara akurat menggunakan model bahasa OpenAI.
+**SHAVIRA** (*Simple & Helpful Virtual Assistant*) adalah aplikasi **Retrieval-Augmented Generation (RAG)** berbasis AI yang dirancang untuk membantu mahasiswa dan civitas akademika dalam mencari informasi dari dokumen internal kampus (seperti PDF peraturan, panduan akademik, prosedur, dll) secara presisi menggunakan model bahasa OpenAI.
 
-## Fitur Utama
+---
 
-- **Akurasi Tinggi**: Menggunakan teknik RAG untuk memastikan jawaban hanya didasarkan pada dokumen referensi yang valid.
-- **Referensi Otomatis**: Setiap jawaban mencantumkan nama file dan nomor halaman sumber informasi.
-- **Pipeline Ingestion Otomatis**: Secara otomatis memproses file PDF baru dari folder `data/raw`, melakukan pembersihan, chunking, dan indexing ke ChromaDB.
-- **Dua Antarmuka**: 
-  - **Web UI**: Interface interaktif berbasis Streamlit.
-  - **CLI (Terminal)**: Akses cepat melalui baris perintah.
-- **Hybrid Storage**: Data teks yang telah dibersihkan dan di-chunk disimpan dalam folder `data/` untuk transparansi.
+## 🌟 Fitur Utama
 
-## Tech Stack
+- **RAG Berpresisi Tinggi**: Menjawab pertanyaan pengguna strictly berbasis konteks dokumen internal untuk mencegah halusinasi.
+- **Sitasi & Referensi Otomatis**: Setiap jawaban menyertakan bagian **"REFERENSI DOKUMEN"** lengkap dengan nama file sumber dan nomor halaman (`page_label`).
+- **Token Text Splitter Chunking**: Menggunakan `TokenTextSplitter` dari LlamaIndex (chunk size: 512 tokens, overlap: 50 tokens) untuk pemotongan teks yang efisien dan konsisten.
+- **Multilingual Embeddings**: Menggunakan model `intfloat/multilingual-e5-large` dari HuggingFace yang sangat optimal untuk teks bahasa Indonesia & Inggris.
+- **Pipeline Ingestion Otomatis & Incremental**: Memproses dokumen dari `data/raw/` dengan sistem manifest (`ingestion_manifest.json`) sehingga hanya memproses file baru atau file yang dimodifikasi (MD5 hash checking).
+- **Dua Pilihan Antarmuka**:
+  - **Web UI Dashboard**: Antarmuka interaktif dan modern berbasis **Streamlit**.
+  - **CLI (Terminal)**: Mode baris perintah cepat untuk pengujian langsung.
 
-- **Framework**: [LlamaIndex](https://www.llamaindex.ai/)
-- **Large Language Model**: OpenAI (GPT-4o-mini)
-- **Vector Database**: [ChromaDB](https://www.trychroma.com/)
-- **Web UI**: [Streamlit](https://streamlit.io/)
-- **Parser**: PyMuPDF4LLM
-- **Embeddings**: HuggingFace (sentence-transformers)
+---
 
-## Struktur Proyek
+## 🛠️ Tech Stack
+
+| Komponen | Teknologi / Model |
+| :--- | :--- |
+| **Framework RAG** | [LlamaIndex](https://www.llamaindex.ai/) |
+| **LLM (Generator)** | OpenAI `gpt-4o-mini` |
+| **Embedding Model** | `intfloat/multilingual-e5-large` (HuggingFace) |
+| **Chunking Strategy** | `TokenTextSplitter` (512 tokens, 50 overlap) |
+| **Vector Database** | [ChromaDB](https://www.trychroma.com/) (`PersistentClient`) |
+| **PDF Parser** | PyMuPDF / PyMuPDF4LLM |
+| **Web Interface** | [Streamlit](https://streamlit.io/) |
+
+---
+
+## 📂 Struktur Proyek
 
 ```text
 RAG-GPT/
-├── app/                # Logika aplikasi CLI
-├── data/
-│   ├── raw/            # Tempat menaruh file PDF asli
-│   ├── cleaned/        # Hasil ekstraksi teks bersih
-│   └── chunk/          # Hasil pemotongan teks (JSON)
-├── src/
-│   ├── ingestion/      # Pipeline pengolahan dokumen
-│   ├── retrieval/      # Logika pencarian dokumen relevan
-│   └── generation/     # Logika pembuatan jawaban (LLM)
-├── storage/            # Database ChromaDB
-├── web_app.py          # Dashboard Streamlit
-├── run.py              # Entry point utama
-└── requirements.txt    # Daftar dependensi
+├── app/                        # Aplikasi CLI interaktif
+│   └── cli.py                  # Logika antarmuka terminal
+├── data/                       # Penyimpanan data pemrosesan
+│   ├── raw/                    # Tempat menaruh file PDF asli
+│   ├── cleaned/                # Hasil ekstraksi teks bersih (MD)
+│   └── chunk/                  # Hasil pemotongan teks (JSON)
+├── src/                        # Modul inti RAG
+│   ├── ingestion/              # Pipeline pemrosesan dokumen
+│   │   ├── loader.py           # Ekstraksi PDF (PyMuPDF)
+│   │   ├── chunking.py         # Pemotongan teks (TokenTextSplitter)
+│   │   ├── embedder.py         # Embedding & penyimpan ke ChromaDB
+│   │   └── ingestion_pipeline.py # Pipeline ingestion incremental
+│   ├── retrieval/              # Pencarian dokumen relevan
+│   │   └── retriever.py        # Query ke ChromaDB vector index
+│   └── generation/             # Logika pembuatan jawaban LLM
+│       └── generator.py        # Formatting prompt & OpenAI API call
+├── storage/                    # Database lokal ChromaDB & Ingestion Manifest
+│   ├── chroma_db/              # Vektor database ChromaDB
+│   └── ingestion_manifest.json # Tracker status file PDF (MD5 hash)
+├── web_app.py                  # Dashboard UI berbasis Streamlit
+├── run.py                      # Entry point CLI aplikasi
+├── sync_manifest.py            # Skrip sinkronisasi manifest & ChromaDB
+├── debug_pipeline.py           # Skrip pengujian & debugging pipeline
+├── requirements.txt            # Daftar dependensi Python
+└── README.md                   # Dokumentasi proyek
 ```
 
-## Instalasi
+---
 
-1. **Clone Repository**:
-   ```bash
-   git clone https://github.com/username/RAG-GPT.git
-   cd RAG-GPT
-   ```
+## 🚀 Instalasi & Persiapan
 
-2. **Buat Virtual Environment**:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   venv\Scripts\activate     # Windows
-   ```
+### 1. Clone Repository
+```bash
+git clone https://github.com/username/RAG-GPT.git
+cd RAG-GPT
+```
 
-3. **Install Dependensi**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 2. Buat Virtual Environment
+```bash
+# Windows (PowerShell)
+python -m venv venv
+.\venv\Scripts\activate
 
-4. **Konfigurasi Environment**:
-   Buat file `.env` di root direktori dan masukkan API Key Anda:
-   ```env
-   OPENAI_API_KEY=your_api_key_here
-   ```
+# Linux / macOS
+python3 -m venv venv
+source venv/bin/activate
+```
 
-## Cara Menjalankan
+### 3. Install Dependensi
+```bash
+pip install -r requirements.txt
+```
 
-### 1. Ingest Data (Opsional)
-Taruh file PDF Anda di folder `data/raw/`. Sistem akan otomatis melakukan ingestion saat dijalankan melalui `run.py`, atau Anda bisa menjalankan pipeline secara manual:
+### 4. Konfigurasi Environment Variable
+Buat file `.env` di direktori utama (root) proyek dan isi dengan API key OpenAI Anda:
+```env
+OPENAI_API_KEY=sk-proj-your-openai-api-key-here
+```
+
+---
+
+## 🎯 Cara Menjalankan Aplikasi
+
+### 1. Menambahkan Dokumen PDF
+Letakkan semua dokumen PDF internal kampus yang ingin diindeks ke dalam direktori:
+```text
+data/raw/
+```
+
+### 2. Menjalankan Ingestion Pipeline (Opsional)
+Pipeline secara otomatis berjalan jika ada dokumen baru saat membuka aplikasi. Namun Anda bisa memprosesnya secara manual kapan saja:
 ```bash
 python src/ingestion/ingestion_pipeline.py
 ```
 
-### 2. Jalankan via Web UI (Rekomendasi)
+### 3. Menjalankan Web UI (Rekomendasi)
+Buka antarmuka aplikasi di browser menggunakan Streamlit:
 ```bash
 streamlit run web_app.py
 ```
+Aplikasi akan dapat diakses di `http://localhost:8501`.
 
-### 3. Jalankan via Terminal (CLI)
+### 4. Menjalankan Mode CLI Terminal
 ```bash
 python run.py
 ```
 
-## Lisensi
-Proyek ini dikembangkan untuk keperluan penelitian dan akademik. Silakan gunakan dan modifikasi sesuai kebutuhan.
+---
 
+## 🔧 Skrip Utilitas & Debugging
 
+- **Sinkronisasi Manifest & Database**:
+  ```bash
+  python sync_manifest.py
+  ```
+- **Pengujian Pipeline Pemrosesan Dokumen**:
+  ```bash
+  python debug_pipeline.py
+  ```
+
+---
+
+## 📄 Lisensi
+Proyek ini dikembangkan untuk keperluan akademik dan penelitian Virtual Assistant Kampus berbasis RAG.
