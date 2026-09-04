@@ -4,7 +4,7 @@ from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 class Retriever:
-    def __init__(self, db_path="storage/chroma_db", model_name="intfloat/multilingual-e5-small"):
+    def __init__(self, db_path="storage/chroma_db", model_name="intfloat/multilingual-e5-large"):
         self.embed_model = HuggingFaceEmbedding(model_name=model_name)
         self.db = chromadb.PersistentClient(path=db_path)
         self.chroma_collection = self.db.get_collection("campus_rag_collection")
@@ -14,7 +14,7 @@ class Retriever:
             self.vector_store, 
             embed_model=self.embed_model
         )
-
+        
     def search(self, query_str, top_k=3):
         # Mengambil potongan teks paling relevan
         retriever = self.index.as_retriever(similarity_top_k=top_k)
