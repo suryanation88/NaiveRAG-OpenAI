@@ -3,25 +3,25 @@ import json
 from typing import Generator, List
 from pathlib import Path
 from llama_index.core import Document as LlamaDocument
-from llama_index.core.node_parser import SentenceSplitter
+from llama_index.core.node_parser import TokenTextSplitter
 
 def chunk_documents(
     documents: Generator[LlamaDocument, None, None],
-    chunk_size: int = 500, 
+    chunk_size: int = 512, 
     overlap: int = 50,
     chunk_dir: str = "data/chunk",
     save_to_json: bool = False # Default dimatikan agar tidak mengotori disk
 ) -> Generator[LlamaDocument, None, None]:
     """
-    Memecah dokumen menjadi potongan (nodes) berbasis kalimat agar makna tetap terjaga.
+    Memecah dokumen menjadi potongan (nodes) berbasis jumlah token (Token Text Splitter).
     Menggunakan Generator agar hemat RAM.
     """
     chunk_dir_path = Path(chunk_dir)
     if save_to_json:
         chunk_dir_path.mkdir(parents=True, exist_ok=True)
 
-    # Menggunakan SentenceSplitter agar tidak memotong kalimat di tengah jalan
-    splitter = SentenceSplitter(
+    # Menggunakan TokenTextSplitter untuk pemotongan berbasis token kaku (fixed token chunking)
+    splitter = TokenTextSplitter(
         chunk_size=chunk_size, 
         chunk_overlap=overlap
     )
