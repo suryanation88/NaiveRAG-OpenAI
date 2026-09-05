@@ -1,11 +1,11 @@
 import chromadb
 from llama_index.core import VectorStoreIndex
 from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.embeddings.openai import OpenAIEmbedding
 
 class Retriever:
-    def __init__(self, db_path="storage/chroma_db", model_name="intfloat/multilingual-e5-large"):
-        self.embed_model = HuggingFaceEmbedding(model_name=model_name)
+    def __init__(self, db_path="storage/chroma_db", model_name="text-embedding-ada-002"):
+        self.embed_model = OpenAIEmbedding(model=model_name)
         self.db = chromadb.PersistentClient(path=db_path)
         self.chroma_collection = self.db.get_collection("campus_rag_collection")
         

@@ -4,11 +4,11 @@ import time
 import chromadb
 from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core import Document as LlamaDocument
 from typing import List
 
-EMBED_MODEL_NAME = "intfloat/multilingual-e5-large"
+EMBED_MODEL_NAME = "text-embedding-ada-002"
 BATCH_SIZE = 32  # Jumlah dokumen per batch embedding
 
 def _format_time(seconds: float) -> str:
@@ -73,7 +73,7 @@ def save_to_vector_store(documents: List[LlamaDocument], db_path: str = "storage
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
     # 4. Inisialisasi model embedding
-    embed_model = HuggingFaceEmbedding(model_name=EMBED_MODEL_NAME)
+    embed_model = OpenAIEmbedding(model=EMBED_MODEL_NAME)
 
     print(f"\n[INFO] Memulai proses embedding untuk {total_docs} chunks...")
     print(f"[INFO] Model: {EMBED_MODEL_NAME} | Batch size: {BATCH_SIZE}")
