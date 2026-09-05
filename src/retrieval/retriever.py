@@ -1,4 +1,9 @@
+import os
 import chromadb
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from llama_index.core import VectorStoreIndex
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding

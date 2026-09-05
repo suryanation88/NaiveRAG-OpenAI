@@ -2,6 +2,10 @@ import os
 import sys
 import time
 import chromadb
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
@@ -9,7 +13,7 @@ from llama_index.core import Document as LlamaDocument
 from typing import List
 
 EMBED_MODEL_NAME = "text-embedding-ada-002"
-BATCH_SIZE = 32  # Jumlah dokumen per batch embedding
+BATCH_SIZE = 32  # Jumlah dokumen per batch embedding 
 
 def _format_time(seconds: float) -> str:
     """Format detik menjadi format jam:menit:detik yang mudah dibaca."""
