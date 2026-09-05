@@ -47,14 +47,11 @@ def chunk_documents(
             # Yield sebagai LlamaDocument untuk tahap embedding
             yield LlamaDocument(text=node.text, metadata=node.metadata)
 
-        # Simpan semua chunks dari satu dokumen ke satu JSON
-        if save_to_json and nodes:
+        # Simpan semua chunks dari satu dokumen ke file .jsonl (JSON Lines)
+        if save_to_json and chunks_data:
             source_name = Path(doc.metadata.get("file_name", "unknown")).stem
-            chunk_filename = f"{source_name}_chunks.json"
+            chunk_filename = f"{source_name}_chunks.jsonl"
             
             with open(chunk_dir_path / chunk_filename, "w", encoding="utf-8") as f:
-                json.dump({
-                    "file_name": doc.metadata.get("file_name"),
-                    "total_chunks": len(chunks_data),
-                    "chunks": chunks_data
-                }, f, ensure_ascii=False, indent=2)
+                for chunk in chunks_data:
+                    f.write(json.dumps(chunk, ensure_ascii=False) + "\n")
