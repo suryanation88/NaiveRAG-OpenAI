@@ -19,7 +19,7 @@ class Retriever:
             self.vector_store, 
             embed_model=self.embed_model
         )
-        
+         
     def search(self, query_str, top_k=3):
         # Mengambil potongan teks paling relevan
         retriever = self.index.as_retriever(similarity_top_k=top_k)

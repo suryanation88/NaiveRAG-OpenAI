@@ -13,7 +13,7 @@ from llama_index.core import Document as LlamaDocument
 from typing import List
 
 EMBED_MODEL_NAME = "text-embedding-ada-002"
-BATCH_SIZE = 32  # Jumlah dokumen per batch embedding 
+BATCH_SIZE = 32  # Jumlah dokumen per batch embedding
 
 def _format_time(seconds: float) -> str:
     """Format detik menjadi format jam:menit:detik yang mudah dibaca."""
