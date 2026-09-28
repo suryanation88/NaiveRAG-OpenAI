@@ -58,9 +58,10 @@ if prompt := st.chat_input("Apa yang ingin Anda tanyakan?"):
                 for i, node in enumerate(nodes):
                     fname = node.metadata.get('file_name', 'Unknown')
                     page = node.metadata.get('page_label', '?')
+                    chunk_idx = node.metadata.get('chunk_index', '-')
                     chunk_content = node.get_content() if hasattr(node, 'get_content') else getattr(node, 'text', 'No content')
                     
-                    ref_text += f"**Sumber {i+1}: {fname} (Hal: {page})**\n"
+                    ref_text += f"**Sumber {i+1}: {fname} (Hal: {page} | Chunk: {chunk_idx})**\n"
                     ref_text += f"```text\n{chunk_content}\n```\n"
                     ref_text += "---\n"
 

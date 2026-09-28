@@ -30,8 +30,9 @@ class Generator:
             content = node.get_content()
             source = node.metadata.get('file_name', 'Unknown')
             page = node.metadata.get('page_label', '-')
+            chunk_idx = node.metadata.get('chunk_index', '-')
             # Menyuntikkan informasi sumber ke dalam teks yang dibaca LLM
-            context_list.append(f"[Sumber: {source}, Hal: {page}]\nIsi: {content}")
+            context_list.append(f"[Sumber: {source}, Hal: {page}, Chunk: {chunk_idx}]\nIsi: {content}")
         
         context_str = "\n\n".join(context_list)
         

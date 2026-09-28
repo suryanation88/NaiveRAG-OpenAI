@@ -67,9 +67,10 @@ def main():
             for i, node in enumerate(nodes):
                 fname = node.metadata.get('file_name', 'Tidak diketahui')
                 page = node.metadata.get('page_label', '?')
+                chunk_idx = node.metadata.get('chunk_index', '-')
                 # LlamaIndex nodes biasanya memiliki atribut score jika menggunakan VectorStore
                 score = getattr(node, 'score', 0.0)
-                print(f" ({i+1}) {fname} | Hal: {page} | Score: {score:.4f}")
+                print(f" ({i+1}) {fname} | Hal: {page} | Chunk: {chunk_idx} | Score: {score:.4f}")
             
     except Exception as e:
         print(f"\n[FATAL ERROR] Terjadi kesalahan sistem: {e}")
